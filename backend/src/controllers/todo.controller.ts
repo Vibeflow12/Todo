@@ -58,7 +58,7 @@ const updateTodo: RequestHandler = catchAsync(async (req: Request, res: Response
     }
 
     const { name, description } = parse.data;
-    const todoId = req.params.id as string;
+    const { id } = req.params;
 
     if (name === undefined && description === undefined) {
         throw new AppError("Nothing to update", 400);
@@ -66,7 +66,7 @@ const updateTodo: RequestHandler = catchAsync(async (req: Request, res: Response
 
     const updatedTodo = await prisma.todo.updateMany({
         where: {
-            id: todoId,
+            id: id as string,
             authorId: req.user.id,
         },
         data: {
@@ -84,9 +84,38 @@ const updateTodo: RequestHandler = catchAsync(async (req: Request, res: Response
         updatedTodo
     });
 });
+
 //delete Todo 
+const deleteTodo: RequestHandler = catchAsync(async (req: Request, res: Response) => {
+
+    if (!req.user) {
+        throw new AppError("Unauthorized", 401);
+    }
+
+    const { id } = req.params;
+
+    if (!id) {
+        throw new AppError("Todo ID is required", 400);
+    }
+
+    const deletedTodo = await prisma.todo.deleteMany({
+        where: {
+            id: id as string,
+            authorId: req.user.id,
+        },
+    });
+
+    if (deletedTodo.count === 0) {
+        throw new AppError("Todo not found or unauthorized", 404);
+    }
+
+
+    return res.status(200).json({
+        message: "todo deleted successfully",
+    });
+});
 // get all todos
 // get perticualar todo on search
 
 
-export { health, createTodo, updateTodo }
+export { health, createTodo, updateTodo, deleteTodo }

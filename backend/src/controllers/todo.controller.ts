@@ -114,8 +114,27 @@ const deleteTodo: RequestHandler = catchAsync(async (req: Request, res: Response
         message: "todo deleted successfully",
     });
 });
+
 // get all todos
+
+const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Response) => {
+
+    if (!req.user) {
+        throw new AppError("Unauthorized", 401);
+    }
+
+    const allTodos = await prisma.todo.findMany({
+        where: {
+            authorId: req.user.id,
+        },
+    });
+
+    return res.status(200).json({
+        message: "all todos",
+        todo: allTodos,
+    });
+});
 // get perticualar todo on search
 
 
-export { health, createTodo, updateTodo, deleteTodo }
+export { health, createTodo, updateTodo, deleteTodo, getAllTodos }

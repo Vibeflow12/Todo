@@ -122,10 +122,25 @@ const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Respons
     if (!req.user) {
         throw new AppError("Unauthorized", 401);
     }
+    const search = req.query.search as string | undefined;
 
     const allTodos = await prisma.todo.findMany({
         where: {
             authorId: req.user.id,
+            ...(search && {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: "insensitive"
+                        },
+                        description: {
+                            contains: search,
+                            mode: "insensitive"
+                        },
+                    }
+                ]
+            })
         },
     });
 

@@ -135,6 +135,32 @@ const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Respons
     });
 });
 // get perticualar todo on search
+const getOneTodo: RequestHandler = catchAsync(async (req: Request, res: Response) => {
 
+    if (!req.user) {
+        throw new AppError("Unauthorized", 401);
+    }
+    const { id } = req.params
 
-export { health, createTodo, updateTodo, deleteTodo, getAllTodos }
+    if (!id) {
+        throw new AppError("Todo id is required", 404);
+    }
+
+    const oneTodos = await prisma.todo.findFirst({
+        where: {
+            id: id as string,
+            authorId: req.user.id,
+        },
+    });
+
+    if (!oneTodos) {
+        throw new AppError("Todo not found ", 404);
+    }
+
+    return res.status(200).json({
+        message: "todo fetch successfully",
+        oneTodos,
+    });
+});
+
+export { health, createTodo, updateTodo, deleteTodo, getAllTodos, getOneTodo }

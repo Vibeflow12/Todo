@@ -12,6 +12,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
 // app.use('/api/v1', v1Router)
 // app.use("/api/v1/auth", toNodeHandler(auth));
 app.use("/api/v1/auth", (req, res, next) => {

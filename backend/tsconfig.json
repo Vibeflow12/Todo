@@ -8,10 +8,11 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "types": [
-      "node",
-      "express"
-    ],
+    // "types": [
+    //   "node",
+    //   "express",
+    //   "./src/types"
+    // ],
     // For nodejs:
     "lib": [
       "esnext"

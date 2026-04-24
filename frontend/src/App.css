@@ -1,6 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Panchang';
+  src: url('./assets/fonts/Panchang-variable.woff') format('woff');
+  src: url('./assets/fonts/Panchang-variable.woff2') format('woff2');
+
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Panchang-ExtraBold';
+  src: url('./assets/fonts/Panchang-Extrabold.woff') format('woff');
+  src: url('./assets/fonts/Panchang-Extrabold.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-inter: "Inter", sans-serif
+  --font-panchang: "Panchang", sans-serif;
+  --font-panchang-extrabold: "Panchang-ExtraBold", sans-serif;
 }

@@ -19,7 +19,15 @@
   font-display: swap;
 }
 
+:root {
+  background: var(--background-image-main-gradient);
+  min-height: 100vh;
+}
+
 @theme {
   --font-panchang: "Panchang", sans-serif;
   --font-panchang-extrabold: "Panchang-ExtraBold", sans-serif;
+  --background-image-main-gradient: linear-gradient(to bottom right, #facc15, #fca5a5, #1e3a8a);
 }
+
+/* --bg-color:"bg-gradient-to-br from-yellow-400 via-red-300 to-blue-900"; */

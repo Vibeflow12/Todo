@@ -5,9 +5,16 @@ import { globalErrorHandler } from "./middleware/error.middleware.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 
+import cors from "cors";
+
 const app: Application = express();
 
 const port = 3000;
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

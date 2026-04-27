@@ -28,12 +28,13 @@ const createTodo: RequestHandler = catchAsync(async (req: Request, res: Response
         throw new AppError("Unauthorized", 401);
     }
 
-    const { name, description } = parse.data;
+    const { name, description, completed } = parse.data;
 
     const todo = await prisma.todo.create({
         data: {
             name,
             description: description ?? null,
+            completed: false,
             authorId: req.user.id,
         },
     });
@@ -57,10 +58,10 @@ const updateTodo: RequestHandler = catchAsync(async (req: Request, res: Response
         throw new AppError("Unauthorized", 401);
     }
 
-    const { name, description } = parse.data;
+    const { name, description, completed } = parse.data;
     const { id } = req.params;
 
-    if (name === undefined && description === undefined) {
+    if (name === undefined && description === undefined && completed === undefined) {
         throw new AppError("Nothing to update", 400);
     }
 
@@ -72,6 +73,7 @@ const updateTodo: RequestHandler = catchAsync(async (req: Request, res: Response
         data: {
             ...(name !== undefined && { name }),
             ...(description !== undefined && { description: description ?? null }),
+            ...(completed !== undefined && { completed })
         },
     });
 
@@ -124,6 +126,9 @@ const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Respons
     }
     const search = req.query.search as string | undefined;
 
+    const isSearchBoolean = search === "true" || search === "false";
+    const boolSearch = search === "true";
+
     const allTodos = await prisma.todo.findMany({
         where: {
             authorId: req.user.id,
@@ -138,7 +143,8 @@ const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Respons
                             contains: search,
                             mode: "insensitive"
                         },
-                    }
+                    },
+                    ...(isSearchBoolean ? [{ completed: { equals: boolSearch } }] : [])
                 ]
             })
         },
@@ -149,33 +155,5 @@ const getAllTodos: RequestHandler = catchAsync(async (req: Request, res: Respons
         todo: allTodos,
     });
 });
-// get perticualar todo on search
-const getOneTodo: RequestHandler = catchAsync(async (req: Request, res: Response) => {
 
-    if (!req.user) {
-        throw new AppError("Unauthorized", 401);
-    }
-    const { id } = req.params
-
-    if (!id) {
-        throw new AppError("Todo id is required", 404);
-    }
-
-    const oneTodos = await prisma.todo.findFirst({
-        where: {
-            id: id as string,
-            authorId: req.user.id,
-        },
-    });
-
-    if (!oneTodos) {
-        throw new AppError("Todo not found ", 404);
-    }
-
-    return res.status(200).json({
-        message: "todo fetch successfully",
-        oneTodos,
-    });
-});
-
-export { health, createTodo, updateTodo, deleteTodo, getAllTodos, getOneTodo }
+export { health, createTodo, updateTodo, deleteTodo, getAllTodos }
